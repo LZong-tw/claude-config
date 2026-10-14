@@ -39,11 +39,7 @@
       "Read(**/*.key)",
       "Read(**/*.pem)",
       "Read(**/*.p12)",
-      "Read(**/*.pfx)",
-      "Bash(curl:*)",
-      "Bash(wget:*)",
-      "Bash(nc:*)",
-      "Bash(netcat:*)"
+      "Read(**/*.pfx)"
     ],
     "ask": [],
     "defaultMode": "auto"

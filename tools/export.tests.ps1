@@ -10,7 +10,7 @@ function New-FakeSource([hashtable]$extra = @{}) {
       autoMode = @{ environment = @('Trusted repo at C:\Users\Someone') }
       permissions = @{
         allow = @('Bash(git status:*)', 'WebFetch(domain:api.example-private.test)')
-        deny = @('Read(.env)'); ask = @(); defaultMode = 'auto'
+        deny = @('Read(.env)', 'Read(.platform-a/**)', 'Read(.platform-b/**)'); ask = @(); defaultMode = 'auto'
       }
       hooks = @{ Stop = @(
         @{ hooks = @(@{ type = 'command'; command = 'node "C:/Users/Someone/.claude/hooks/session-healthcheck.cjs"' }) },
@@ -54,6 +54,8 @@ $md = Get-Content (Join-Path $r.Dest 'windows\examples\CLAUDE.example.md') -Raw 
 Check 'clean tree exports' ($r.Code -eq 0) $r.Log
 Check 'autoMode dropped' ($settings -and $settings -notmatch 'autoMode|Trusted repo')
 Check 'private allow rule dropped' ($settings -and $settings -notmatch 'example-private')
+Check 'platform-specific deny rules dropped' ($settings -and $settings -notmatch 'platform-[ab]')
+Check 'generic deny rule kept' ($settings -and $settings -match 'Read\(\.env\)')
 Check 'generic allow rule kept' ($settings -and $settings -match 'git status')
 Check 'third-party hook dropped' ($settings -and $settings -notmatch 'orca')
 Check 'home path replaced' ($settings -and $settings -match '\{\{HOME\}\}/\.claude/hooks/session-healthcheck\.cjs' -and $settings -notmatch 'Someone')

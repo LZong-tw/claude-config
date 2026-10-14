@@ -32,6 +32,9 @@ $safeAllow = 'Bash(git status:*)', 'Bash(git log:*)', 'Bash(git branch:*)', 'Bas
   'Bash(gh pr list:*)', 'Bash(gh pr view:*)', 'Bash(gh run list:*)', 'Bash(gh run view:*)',
   'Bash(ls:*)', 'Bash(cat:*)', 'Bash(head:*)', 'Bash(jq:*)', 'Bash(echo:*)', 'WebSearch'
 
+$safeDeny = 'Read(.env)', 'Read(.env.*)', 'Read(**/.env)', 'Read(**/.env.*)', 'Read(**/credentials.*)', 'Read(**/secrets.*)',
+  'Read(**/*.key)', 'Read(**/*.pem)', 'Read(**/*.p12)', 'Read(**/*.pfx)'
+
 $stage = Join-Path ([IO.Path]::GetTempPath()) ("claude-config-export-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Force $stage | Out-Null
 
@@ -67,7 +70,7 @@ try {
   }
   $perm = [ordered]@{}
   $perm.allow = @($s.permissions.allow | Where-Object { $_ -in $safeAllow })
-  $perm.deny = @($s.permissions.deny)
+  $perm.deny = @($s.permissions.deny | Where-Object { $_ -in $safeDeny })
   $perm.ask = @($s.permissions.ask)
   if ($s.permissions.defaultMode) { $perm.defaultMode = $s.permissions.defaultMode }
   $out.permissions = $perm
