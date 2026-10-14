@@ -24,7 +24,7 @@ if ($Flavor -eq 'windows') {
 } else {
   $hookFiles = 'bash_guard.py'
   $hookTests = @()
-  $skills = 'parallel-fix'
+  $skills = 'parallel-fix', 'incident', 'ship'
   $skillsOut = 'wsl\skills'
   $ownedDirs = @('wsl')
 }

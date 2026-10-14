@@ -14,6 +14,8 @@ by hand from `~/.claude`, and the live `settings.json` is never published.
 | `windows/examples/` | Sanitized `settings.example.json` and `CLAUDE.example.md` |
 | `wsl/hooks/bash_guard.py` | PreToolUse guard: blocks broad `pkill -f` / `killall` and unreplaced `<PLACEHOLDER>` text in commands, ignoring heredoc bodies |
 | `wsl/skills/parallel-fix` | Several independent fixes in parallel, one worktree and subagent each |
+| `wsl/skills/incident` | Production incident investigation: ranked hypotheses, one read-only subagent each, evidence-tagged report |
+| `wsl/skills/ship` | Fix-to-production pipeline with `glab` MR flow. `preflight.sh` checks disk, `glab`/`gh` auth and, optionally, an ansible-vault (`PREFLIGHT_VAULT_FILE` / `PREFLIGHT_VAULT_PASS`, or `~/.config/ship/preflight.env`). Hosts to verify go in `SHIP_HOSTS` |
 | `wsl/examples/` | Sanitized `settings.example.json` (the WSL `CLAUDE.md` is not published) |
 
 Not here on purpose: statusline scripts live in

@@ -91,6 +91,7 @@ function New-FakeWslSource([hashtable]$extra = @{}) {
     'skills\ramp-controller\SKILL.md' = 'targets web-01 192.168.152.244'
     'skills\incident\SKILL.md' = 'vault under ~/.config/private-garden'
     'skills\ship\SKILL.md' = 'ship'
+    'skills\ship\preflight.sh' = '#!/usr/bin/env bash'
   }
   foreach ($k in $extra.Keys) { $files[$k] = $extra[$k] }
   foreach ($k in $files.Keys) {
@@ -104,13 +105,15 @@ $r = Invoke-Export (New-FakeWslSource) 'wsl' '/home/someone'
 $ws = Get-Content (Join-Path $r.Dest 'wsl\examples\settings.example.json') -Raw -ErrorAction SilentlyContinue
 $shipped = if (Test-Path (Join-Path $r.Dest 'wsl')) { (Get-ChildItem (Join-Path $r.Dest 'wsl') -Recurse -File | ForEach-Object { $_.FullName }) -join "`n" } else { '' }
 Check 'wsl exports' ($r.Code -eq 0) $r.Log
-Check 'wsl keeps generic hook and skill' ($shipped -match 'bash_guard\.py' -and $shipped -match 'parallel-fix')
-Check 'wsl drops infra skills and CLAUDE.md' ($shipped -notmatch 'ramp-controller|incident|ship|CLAUDE')
+Check 'wsl keeps generic hook and skills' ($shipped -match 'bash_guard\.py' -and $shipped -match 'parallel-fix' -and $shipped -match 'incident' -and $shipped -match 'preflight\.sh')
+Check 'wsl drops ramp-controller and CLAUDE.md' ($shipped -notmatch 'ramp-controller|CLAUDE')
 Check 'wsl drops vendor-injected hook' ($ws -and $ws -notmatch 'orca|HOME-')
 Check 'wsl keeps bash_guard hook entry' ($ws -and $ws -match 'bash_guard\.py')
 Check 'wsl drops work-only allow rules' ($ws -and $ws -notmatch 'sentry|glab')
 $r = Invoke-Export (New-FakeWslSource @{ 'hooks\bash_guard.py' = '# talks to 192.168.152.244' }) 'wsl' '/home/someone'
 Check 'wsl blocks internal IP' ($r.Code -ne 0 -and -not (Test-Path (Join-Path $r.Dest 'wsl')))
+$r = Invoke-Export (New-FakeWslSource @{ 'skills\ship\preflight.sh' = 'C=~/.config/example-private.test' }) 'wsl' '/home/someone'
+Check 'wsl blocks denylisted term in ship preflight' ($r.Code -ne 0 -and -not (Test-Path (Join-Path $r.Dest 'wsl')))
 $r = Invoke-Export (New-FakeWslSource @{ 'skills\parallel-fix\SKILL.md' = 'see /home/bob/notes' }) 'wsl' '/home/someone'
 Check 'wsl blocks foreign home path' ($r.Code -ne 0 -and -not (Test-Path (Join-Path $r.Dest 'wsl')))
 
