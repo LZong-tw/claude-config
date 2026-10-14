@@ -1,0 +1,28 @@
+[
+  { "tool": "Bash", "cmd": "codex exec \"fix it\"", "block": true },
+  { "tool": "Bash", "cmd": "cd /c/dev/x && codex exec -c sandbox_mode=danger-full-access \"fix\" > log 2>&1", "block": true },
+  { "tool": "Bash", "cmd": "codex -c model=x exec \"fix\"", "block": true },
+  { "tool": "Bash", "cmd": "CODEX_GATE_DISABLE=1 codex exec \"x\"", "block": true },
+  { "tool": "Bash", "cmd": "env FOO=1 codex exec \"x\"", "block": true },
+  { "tool": "Bash", "cmd": "nohup codex exec \"x\" &", "block": true },
+  { "tool": "Bash", "cmd": "/c/nvm4w/nodejs/codex exec \"x\"", "block": true },
+  { "tool": "Bash", "cmd": "node C:/nvm4w/nodejs/node_modules/@openai/codex/bin/codex.js exec \"x\"", "block": true },
+  { "tool": "Bash", "cmd": "echo start; codex exec \"x\"", "block": true },
+  { "tool": "Bash", "cmd": "out=$(codex exec \"x\")", "block": true },
+  { "tool": "Bash", "cmd": "cat <<'EOF' | codex exec -\nprompt\nEOF", "block": true },
+  { "tool": "Bash", "cmd": "codex.cmd exec \"x\"", "block": true },
+  { "tool": "PowerShell", "cmd": "codex exec \"x\"", "block": true },
+  { "tool": "PowerShell", "cmd": "& \"C:\\nvm4w\\nodejs\\codex.cmd\" exec \"x\"", "block": true },
+  { "tool": "PowerShell", "cmd": "Set-Location C:\\dev\\x; codex exec \"x\"", "block": true },
+
+  { "tool": "Bash", "cmd": "git status", "block": false },
+  { "tool": "Bash", "cmd": "codex --version", "block": false },
+  { "tool": "Bash", "cmd": "codex exec-server --remote x", "block": false },
+  { "tool": "Bash", "cmd": "codex login status", "block": false },
+  { "tool": "Bash", "cmd": "git commit -m \"docs: limit codex exec concurrency\"", "block": false },
+  { "tool": "Bash", "cmd": "grep -n 'codex exec' CLAUDE.md", "block": false },
+  { "tool": "Bash", "cmd": "echo \"run codex exec later\"", "block": false },
+  { "tool": "PowerShell", "cmd": "Write-Output \"live test: codex exec should be blocked\"", "block": false },
+  { "tool": "PowerShell", "cmd": "$f=@'\n- refuses a command matching `codex … exec` when\n- max(held slot ports, codex.exe processes with \" exec \")\n'@", "block": false },
+  { "tool": "PowerShell", "cmd": "Select-String -Path x.md -Pattern 'codex exec'", "block": false }
+]
