@@ -38,10 +38,11 @@ $safeDeny = 'Read(.env)', 'Read(.env.*)', 'Read(**/.env)', 'Read(**/.env.*)', 'R
 $stage = Join-Path ([IO.Path]::GetTempPath()) ("claude-config-export-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Force $stage | Out-Null
 
-function Copy-Staged([string]$rel, [string]$to) {
+function Copy-Staged([string]$rel, [string]$to, [switch]$Absolute) {
   $target = Join-Path $stage $to
   New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
-  Copy-Item (Join-Path $Source $rel) $target -Recurse -Force
+  $from = if ($Absolute) { $rel } else { Join-Path $Source $rel }
+  Copy-Item $from $target -Recurse -Force
 }
 
 function Hide-Home([string]$text) {
@@ -92,12 +93,10 @@ try {
   New-Item -ItemType Directory -Force (Join-Path $stage "$Flavor\examples") | Out-Null
   [IO.File]::WriteAllText((Join-Path $stage "$Flavor\examples\settings.example.json"), $settingsText, [Text.UTF8Encoding]::new($false))
 
-  # CLAUDE.md (windows only): drop the RTK import and the PostHog block, both personal tooling.
-  # The WSL one mixes in work workflow notes, so it is never published.
+  # CLAUDE.md: the live files mix in personal tooling and work notes, so neither is published.
+  # One merged, generic template (tools/templates) covers both hosts; it still goes through the leak scan.
   if ($Flavor -eq 'windows') {
-    $md = Get-Content (Join-Path $Source 'CLAUDE.md') -Raw
-    $md = $md -replace '(?m)^@RTK\.md[ \t]*\r?\n', '' -replace '(?s)<posthog>.*?</posthog>\s*', ''
-    [IO.File]::WriteAllText((Join-Path $stage 'windows\examples\CLAUDE.example.md'), (Hide-Home $md), [Text.UTF8Encoding]::new($false))
+    Copy-Staged (Join-Path $PSScriptRoot 'templates\CLAUDE.example.md') 'shared\examples\CLAUDE.example.md' -Absolute
   }
 
   # Leak scan over the exact bytes about to be published.

@@ -50,7 +50,7 @@ function Check($name, [bool]$ok, $detail = '') {
 # Clean tree: exports, and the private bits are gone while the useful bits stay.
 $r = Invoke-Export (New-FakeSource)
 $settings = Get-Content (Join-Path $r.Dest 'windows\examples\settings.example.json') -Raw -ErrorAction SilentlyContinue
-$md = Get-Content (Join-Path $r.Dest 'windows\examples\CLAUDE.example.md') -Raw -ErrorAction SilentlyContinue
+$md = Get-Content (Join-Path $r.Dest 'shared\examples\CLAUDE.example.md') -Raw -ErrorAction SilentlyContinue
 Check 'clean tree exports' ($r.Code -eq 0) $r.Log
 Check 'autoMode dropped' ($settings -and $settings -notmatch 'autoMode|Trusted repo')
 Check 'private allow rule dropped' ($settings -and $settings -notmatch 'example-private')
@@ -59,7 +59,8 @@ Check 'generic deny rule kept' ($settings -and $settings -match 'Read\(\.env\)')
 Check 'generic allow rule kept' ($settings -and $settings -match 'git status')
 Check 'third-party hook dropped' ($settings -and $settings -notmatch 'orca')
 Check 'home path replaced' ($settings -and $settings -match '\{\{HOME\}\}/\.claude/hooks/session-healthcheck\.cjs' -and $settings -notmatch 'Someone')
-Check 'RTK import and posthog dropped' ($md -and $md -notmatch 'RTK|posthog')
+Check 'merged CLAUDE example published, no personal tooling' ($md -and $md -match 'Execution discipline' -and $md -match 'pkill' -and $md -match 'CRLF' -and $md -notmatch 'RTK|posthog|headroom|web-0')
+Check 'live CLAUDE.md never copied' ($md -and $md -notmatch 'Rules')
 
 # Leaks in files that are copied verbatim must stop the export and leave dest untouched.
 $cases = @{

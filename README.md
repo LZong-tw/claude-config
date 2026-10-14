@@ -11,12 +11,13 @@ by hand from `~/.claude`, and the live `settings.json` is never published.
 | `shared/skills/` | `merge-pr`, `converge-pr`, `handoff`, `diagnose-readonly`, `survey` |
 | `windows/hooks/` | `session-healthcheck` (warns at startup if bash, rtk or the proxy is down), `codex-concurrency-gate`, `bash-ps-syntax-guard`, `cleanup-serena`, with tests |
 | `windows/scripts/daily-watchdog.ps1` | Collects process, memory and worktree facts itself, then asks `claude -p` (no tools) to summarize. Reports only, never kills anything |
-| `windows/examples/` | Sanitized `settings.example.json` and `CLAUDE.example.md` |
+| `shared/examples/CLAUDE.example.md` | One merged, de-duplicated `CLAUDE.md` for both Windows and WSL/Linux hosts (source: `tools/templates/`, hand-maintained and leak-scanned on export) |
+| `windows/examples/` | Sanitized `settings.example.json` |
 | `wsl/hooks/bash_guard.py` | PreToolUse guard: blocks broad `pkill -f` / `killall` and unreplaced `<PLACEHOLDER>` text in commands, ignoring heredoc bodies |
 | `wsl/skills/parallel-fix` | Several independent fixes in parallel, one worktree and subagent each |
 | `wsl/skills/incident` | Production incident investigation: ranked hypotheses, one read-only subagent each, evidence-tagged report |
 | `wsl/skills/ship` | Fix-to-production pipeline with `glab` MR flow. `preflight.sh` checks disk, `glab`/`gh` auth and, optionally, an ansible-vault (`PREFLIGHT_VAULT_FILE` / `PREFLIGHT_VAULT_PASS`, or `~/.config/ship/preflight.env`). Hosts to verify go in `SHIP_HOSTS` |
-| `wsl/examples/` | Sanitized `settings.example.json` (the WSL `CLAUDE.md` is not published) |
+| `wsl/examples/` | Sanitized `settings.example.json` (the live `CLAUDE.md` files are not published; see the merged example above) |
 
 Not here on purpose: statusline scripts live in
 [claude-statusline-config](https://github.com/LZong-tw/claude-statusline-config), pxpipe scheduled tasks in
